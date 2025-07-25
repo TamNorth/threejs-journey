@@ -29,22 +29,47 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 
-// Time
-let time = Date.now();
+/**
+ * Solution 1: deltaTime
+ */
+
+// // Time
+// let time = Date.now();
+
+// // Animations
+// const tick = () => {
+//   // Time
+//   const currentTime = Date.now();
+//   const deltaTime = currentTime - time;
+//   time = currentTime;
+
+//   // Update objects
+//   mesh.rotation.y += 0.001 * deltaTime;
+
+//   // render
+//   window.requestAnimationFrame(tick);
+//   renderer.render(scene, camera);
+// };
+
+/** Solution 2: Clock
+ *
+ */
+
+// Clock
+const clock = new THREE.Clock();
 
 // Animations
 const tick = () => {
-  // Time
-  const currentTime = Date.now();
-  const deltaTime = currentTime - time;
-  time = currentTime;
+  // Clock
+  const elapsedTime = clock.getElapsedTime();
 
   // Update objects
-  mesh.rotation.y += 0.001 * deltaTime;
+  mesh.rotation.y = elapsedTime;
+  mesh.position.y = Math.tan(elapsedTime);
 
-  // render
-  window.requestAnimationFrame(tick);
+  // Render
   renderer.render(scene, camera);
+  window.requestAnimationFrame(tick);
 };
 
 tick();
