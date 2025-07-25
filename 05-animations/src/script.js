@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import gsap from "gsap";
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -52,9 +53,6 @@ renderer.setSize(sizes.width, sizes.height);
 // };
 
 /** Solution 2: Clock
- *
- */
-
 // Clock
 const clock = new THREE.Clock();
 
@@ -67,6 +65,18 @@ const tick = () => {
   mesh.rotation.y = elapsedTime;
   mesh.position.y = Math.tan(elapsedTime);
 
+  // Render
+  renderer.render(scene, camera);
+  window.requestAnimationFrame(tick);
+};
+ */
+
+gsap.to(mesh.position, { duration: 1, delay: 1, x: 2 });
+gsap.to(mesh.position, { duration: 1, delay: 2, x: -2 });
+gsap.to(mesh.position, { duration: 1, delay: 3, x: 0 });
+
+// Animations
+const tick = () => {
   // Render
   renderer.render(scene, camera);
   window.requestAnimationFrame(tick);
