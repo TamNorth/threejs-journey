@@ -38,10 +38,9 @@ const tick = () => {
   const currentTime = Date.now();
   const deltaTime = currentTime - time;
   time = currentTime;
-  console.log(deltaTime);
 
   // Update objects
-  mesh.position.z -= 0.01;
+  mesh.rotation.y += 0.001 * deltaTime;
 
   // render
   window.requestAnimationFrame(tick);
