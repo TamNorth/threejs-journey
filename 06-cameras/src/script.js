@@ -69,8 +69,8 @@ const tick = () => {
   //   mesh.rotation.y = elapsedTime;
 
   // Camera
-  camera.position.x = cursor.x * 3;
-  camera.position.y = cursor.y * 3;
+  camera.position.x = Math.cos(cursor.x * 2 * Math.PI) * 3;
+  camera.position.z = Math.sin(cursor.x * 2 * Math.PI) * 3;
   camera.lookAt(new THREE.Vector3());
 
   // Render
