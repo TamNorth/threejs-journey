@@ -6,7 +6,18 @@ import GUI from "lil-gui";
 /**
  * Debug
  */
-const gui = new GUI();
+const gui = new GUI({
+  width: 300,
+  title: "debug UI",
+  closeFolders: false,
+});
+// gui.close();
+gui.hide();
+window.addEventListener("keydown", (event) => {
+  if (event.key == "h") {
+    gui.show(gui._hidden); // gui._hidden is a boolean, so gui.show() will toggle based on the state
+  }
+});
 const debugObject = {};
 
 /**
