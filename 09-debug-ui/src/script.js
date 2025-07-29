@@ -32,27 +32,29 @@ scene.add(mesh);
 
 // Add debug tweaks
 
-// gui.add(mesh.position, "y", -3, 3, 0.01); // this works but syntax below is more readable:
-gui.add(mesh.position, "y").min(-3).max(3).step(0.01).name("elevation");
-gui.add(mesh.material, "wireframe");
-gui.add(mesh, "visible");
+const meshTweaks = gui.addFolder("mesh tweaks");
 
-/** gui.addColor(material, "color");
+// gui.add(mesh.position, "y", -3, 3, 0.01); // this works but syntax below is more readable:
+meshTweaks.add(mesh.position, "y").min(-3).max(3).step(0.01).name("elevation");
+meshTweaks.add(mesh.material, "wireframe");
+meshTweaks.add(mesh, "visible");
+
+/** meshTweaks.addColor(material, "color");
  * // Method 1: doesn't quite work because Three.js manages colours to optimise rendering, so hexidecimal in tweak panel will not match hexidecimal in code */
-/**  gui.addColor(material, "color").onChange((value) => {
+/**  meshTweaks.addColor(material, "color").onChange((value) => {
  *   console.log(value.getHexString());
  * }); // Method 2: this works, but we have to open the console to get the correct hexidecimal - not ideal for clients */
-gui.addColor(debugObject, "color").onChange((value) => {
+meshTweaks.addColor(debugObject, "color").onChange((value) => {
   material.color.set(value);
 }); // Method 3: we change the colour outside of three.js using the debugObject.color property first, and then apply it to the object. This keeps the tweak panel outside of three.js and its colour management, so we get consistent hexidecimal values
 
 debugObject.spin = () => {
   gsap.to(mesh.rotation, { y: mesh.rotation.y + Math.PI * 2 });
 };
-gui.add(debugObject, "spin");
+meshTweaks.add(debugObject, "spin");
 
 debugObject.subDivision = 2;
-gui
+meshTweaks
   .add(debugObject, "subDivision")
   .min(1)
   .max(20)
