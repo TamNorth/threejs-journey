@@ -33,6 +33,7 @@ scene.add(mesh);
 gui.add(mesh.position, "y").min(-3).max(3).step(0.01).name("elevation");
 gui.add(mesh.material, "wireframe");
 gui.add(mesh, "visible");
+
 /** gui.addColor(material, "color");
  * // Method 1: doesn't quite work because Three.js manages colours to optimise rendering, so hexidecimal in tweak panel will not match hexidecimal in code */
 /**  gui.addColor(material, "color").onChange((value) => {
@@ -41,6 +42,11 @@ gui.add(mesh, "visible");
 gui.addColor(debugObject, "color").onChange((value) => {
   material.color.set(value);
 }); // Method 3: we change the colour outside of three.js using the debugObject.color property first, and then apply it to the object. This keeps the tweak panel outside of three.js and its colour management, so we get consistent hexidecimal values
+
+debugObject.spin = () => {
+  gsap.to(mesh.rotation, { y: mesh.rotation.y + Math.PI * 2 });
+};
+gui.add(debugObject, "spin");
 
 /**
  * Sizes
