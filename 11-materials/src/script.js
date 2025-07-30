@@ -83,25 +83,74 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // gradientTexture.magFilter = THREE.NearestFilter;
 // material.gradientMap = gradientTexture; // NB default mip-mapping will stretch and smooth our gradientTexture so that we do not get separate defined values
 
-// MeshStandardMaterial
-const material = new THREE.MeshStandardMaterial();
-material.roughness = 1;
-material.metalness = 1;
-material.map = doorColorTexture;
-material.aoMap = doorAmbientOcclusionTexture;
-material.aoMapIntensity = 1; // provided for example but 1 is default value anyway
-material.displacementMap = doorHeightTexture; // note we need to add segments to geometry to see displacment
-material.displacementScale = 0.1;
-material.metalnessMap = doorMetalnessTexture;
-material.roughnessMap = doorRoughnessTexture;
-material.normalMap = doorNormalTexture;
-material.normalScale.set(0.5, 0.5);
+// // MeshStandardMaterial
+// const material = new THREE.MeshStandardMaterial();
+// material.roughness = 1;
+// material.metalness = 1;
+// material.map = doorColorTexture;
+// material.aoMap = doorAmbientOcclusionTexture;
+// material.aoMapIntensity = 1; // provided for example but 1 is default value anyway
+// material.displacementMap = doorHeightTexture; // note we need to add segments to geometry to see displacment
+// material.displacementScale = 0.1;
+// material.metalnessMap = doorMetalnessTexture;
+// material.roughnessMap = doorRoughnessTexture;
+// material.normalMap = doorNormalTexture;
+// material.normalScale.set(0.5, 0.5);
+// material.transparent = true;
+// material.alphaMap = doorAlphaTexture;
+
+// gui.add(material, "metalness").min(0).max(1).step(0.0001);
+// gui.add(material, "roughness").min(0).max(1).step(0.0001);
+// // standard because it uses physically-based rendering (PBR), giving realistic effects that give similar results across software environments
+
+// MeshPhysicalMaterial
+const material = new THREE.MeshPhysicalMaterial();
+material.roughness = 0;
+material.metalness = 0;
+// material.map = doorColorTexture;
+// material.aoMap = doorAmbientOcclusionTexture;
+// material.aoMapIntensity = 1; // provided for example but 1 is default value anyway
+// material.displacementMap = doorHeightTexture; // note we need to add segments to geometry to see displacment
+// material.displacementScale = 0.1;
+// material.metalnessMap = doorMetalnessTexture;
+// material.roughnessMap = doorRoughnessTexture;
+// material.normalMap = doorNormalTexture;
+// material.normalScale.set(0.5, 0.5);
 material.transparent = true;
-material.alphaMap = doorAlphaTexture;
+// material.alphaMap = doorAlphaTexture;
 
 gui.add(material, "metalness").min(0).max(1).step(0.0001);
 gui.add(material, "roughness").min(0).max(1).step(0.0001);
-// standard because it uses physically-based rendering (PBR), giving realistic effects that give similar results across software environments
+
+// material.clearcoat = 1; // note this property is hard on performance
+// material.clearcoatRoughness = 0;
+// gui.add(material, "clearcoat").min(0).max(1).step(0.0001);
+// gui.add(material, "clearcoatRoughness").min(0).max(1).step(0.0001);
+
+// material.sheen = 1;
+// material.sheenRoughness = 0;
+// // material.sheenColor = new THREE.Color(0xff0000);
+// material.sheenColor.set(1, 1, 1);
+// gui.add(material, "sheen").min(0).max(1).step(0.0001);
+// gui.add(material, "sheenRoughness").min(0).max(1).step(0.0001);
+// gui.addColor(material, "sheenColor");
+
+// material.iridescence = 1;
+// material.iridescenceIOR = 1;
+// material.iridescenceThicknessRange = [100, 800];
+// gui.add(material, "iridescence").min(0).max(1).step(0.0001);
+// gui.add(material, "iridescenceIOR").min(1).max(2.333).step(0.0001); // values outside this range are not physically realistic
+// gui.add(material.iridescenceThicknessRange, "0").min(1).max(1000).step(0.0001);
+// gui.add(material.iridescenceThicknessRange, "1").min(1).max(1000).step(0.0001);
+
+material.transmission = 1;
+material.ior = 1.5; // e.g. diamond = 2.417, glass = ~1.5, water = 1.333, air = 1.000293 (more at https://en.wikipedia.org/wiki/List_of_refractive_indices)
+material.thickness = 0.5; // note Three cannot calculate thickness from geometry
+gui.add(material, "transmission").min(0).max(1).step(0.0001);
+gui.add(material, "ior").min(1).max(10).step(0.001);
+gui.add(material, "thickness").min(0).max(1).step(0.001);
+
+// extends MeshStandardMaterial and additionally supports clearcoat, sheen, iridescence and transmission properties
 
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
 const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 300, 300), material);
