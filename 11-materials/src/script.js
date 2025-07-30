@@ -28,7 +28,7 @@ const doorAmbientOcclusionTexture = textureLoader.load(
   "./textures/door/ambientOcclusion.jpg"
 );
 const doorHeightTexture = textureLoader.load("./textures/door/height.jpg");
-const doormetalnessTexture = textureLoader.load(
+const doorMetalnessTexture = textureLoader.load(
   "./textures/door/metalness.jpg"
 );
 const doorNormalTexture = textureLoader.load("./textures/door/normal.jpg");
@@ -85,15 +85,26 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 
 // MeshStandardMaterial
 const material = new THREE.MeshStandardMaterial();
-material.roughness = 0.2;
-material.metalness = 0.7;
+material.roughness = 1;
+material.metalness = 1;
+material.map = doorColorTexture;
+material.aoMap = doorAmbientOcclusionTexture;
+material.aoMapIntensity = 1; // provided for example but 1 is default value anyway
+material.displacementMap = doorHeightTexture; // note we need to add segments to geometry to see displacment
+material.displacementScale = 0.1;
+material.metalnessMap = doorMetalnessTexture;
+material.roughnessMap = doorRoughnessTexture;
+material.normalMap = doorNormalTexture;
+material.normalScale.set(0.5, 0.5);
+material.transparent = true;
+material.alphaMap = doorAlphaTexture;
 
 gui.add(material, "metalness").min(0).max(1).step(0.0001);
 gui.add(material, "roughness").min(0).max(1).step(0.0001);
 // standard because it uses physically-based rendering (PBR), giving realistic effects that give similar results across software environments
 
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 300, 300), material);
 const torus = new THREE.Mesh(
   new THREE.TorusGeometry(0.3, 0.2, 16, 32),
   material
