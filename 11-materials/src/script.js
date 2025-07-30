@@ -45,9 +45,13 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // material.alphaMap = doorAlphaTexture;
 // material.side = THREE.DoubleSide; // renders texture on both sides but requires more processing
 
-// MeshNormalMaterial
-const material = new THREE.MeshNormalMaterial();
-material.flatShading = true; // useful for debugging
+// // MeshNormalMaterial
+// const material = new THREE.MeshNormalMaterial();
+// material.flatShading = true; // useful for debugging
+
+// MeshMatcapMaterial
+const material = new THREE.MeshMatcapMaterial();
+material.matcap = matcapTexture;
 
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
 const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
