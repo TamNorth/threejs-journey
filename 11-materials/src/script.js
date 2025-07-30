@@ -45,6 +45,13 @@ material.opacity = 0.2;
 material.alphaMap = doorAlphaTexture;
 material.side = THREE.DoubleSide; // renders texture on both sides but requires more processing
 
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+const torus = new THREE.Mesh(
+  new THREE.TorusGeometry(0.3, 0.2, 16, 32),
+  material
+);
+
 sphere.position.x = -1.5;
 torus.position.x = 1.5;
 
