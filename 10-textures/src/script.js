@@ -8,9 +8,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 /** Nuts & bolts method:
  * const image = new Image();
  * const texture = new THREE.Texture(image);
- * const texture = new THREE.Texture(image);
  * image.onload = () => {
- *   texture.needsUpdate = true;
+ *   texture.needsUpdate = true; // this allows us to declare and assign texture outside the scope of image.onload, and then update the texture once the image changes
  * };
  * image.src = "/textures/door/color.jpg";
  */
@@ -27,8 +26,8 @@ loadingManager.onProgress = () => {
   console.log("onProgress");
 };
 const textureLoader = new THREE.TextureLoader(loadingManager);
-const colourTexture = textureLoader.load("/textures/door/color.jpg"); // takes 4 arguments, url and 3 callbacks - first for load, second for progress, third for errors; an alternative is to use a LoadingManager and its .onStart, .onProgress, .onLoad & .onError methods
-const alphaTexture = textureLoader.load("/textures/door/alpha.jpg");
+const colorTexture = textureLoader.load("/textures/door/color.jpg"); // takes 4 arguments, url and 3 callbacks - first for load, second for progress, third for errors; an alternative is to use a LoadingManager and its .onStart, .onProgress, .onLoad & .onError methods
+const alphaTexture = textureLoader.load("/textures/door/alpha.jpg"); // we can re-use textureLoader and get messages from loadingManager for each instance
 const heightTexture = textureLoader.load("/textures/door/height.jpg");
 const normalTexture = textureLoader.load("/textures/door/normal.jpg");
 const ambientOcclusionTexture = textureLoader.load(
@@ -36,6 +35,16 @@ const ambientOcclusionTexture = textureLoader.load(
 );
 const metalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
 const roughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
+
+colorTexture.colorSpace = THREE.SRGBColorSpace; // textures used as map or matcap need to be encoded as sRGB
+colorTexture.repeat.x = 2;
+colorTexture.repeat.y = 3; // by itself, scales texture by 1/3 and causes the last pixel to repeat to the end of the UV mapping coordinate
+colorTexture.wrapS = THREE.RepeatWrapping; // causes whole texture to repeat rather than just last pixel
+colorTexture.wrapT = THREE.MirroredRepeatWrapping; // same but mirrored every wrap... but not working??
+colorTexture.offset.x = 0.5; // units are texture dimensions
+colorTexture.rotation = Math.PI * 0.5; // radians - default centre of rotation is at a vertex - 0,0 on the UV map (?)
+colorTexture.center.x = 0.5;
+colorTexture.center.y = 0.5;
 
 /**
  * Base
@@ -50,7 +59,7 @@ const scene = new THREE.Scene();
  * Object
  */
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ map: colourTexture });
+const material = new THREE.MeshBasicMaterial({ map: colorTexture });
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 
