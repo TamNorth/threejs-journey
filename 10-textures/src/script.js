@@ -5,13 +5,29 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
  * Textures
  */
 
-const image = new Image();
-const texture = new THREE.Texture(image);
-image.onload = () => {
-  texture.needsUpdate = true;
-};
+/** Nuts & bolts method:
+ * const image = new Image();
+ * const texture = new THREE.Texture(image);
+ * const texture = new THREE.Texture(image);
+ * image.onload = () => {
+ *   texture.needsUpdate = true;
+ * };
+ * image.src = "/textures/door/color.jpg";
+ */
 
-image.src = "/textures/door/color.jpg";
+// abstracted method:
+const loadingManager = new THREE.LoadingManager();
+loadingManager.onStart = () => {
+  console.log("onStart");
+};
+loadingManager.onLoad = () => {
+  console.log("onLoad");
+};
+loadingManager.onProgress = () => {
+  console.log("onProgress");
+};
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const texture = textureLoader.load("/textures/door/color.jpg"); // takes 4 arguments, url and 3 callbacks - first for load, second for progress, third for errors; an alternative is to use a LoadingManager and its .onStart, .onProgress, .onLoad & .onError methods
 
 /**
  * Base
