@@ -26,7 +26,7 @@ loadingManager.onProgress = () => {
   console.log("onProgress");
 };
 const textureLoader = new THREE.TextureLoader(loadingManager);
-const colorTexture = textureLoader.load("/textures/door/color.jpg"); // takes 4 arguments, url and 3 callbacks - first for load, second for progress, third for errors; an alternative is to use a LoadingManager and its .onStart, .onProgress, .onLoad & .onError methods
+const colorTexture = textureLoader.load("/textures/checkerboard-1024x1024.png"); // takes 4 arguments, url and 3 callbacks - first for load, second for progress, third for errors; an alternative is to use a LoadingManager and its .onStart, .onProgress, .onLoad & .onError methods
 const alphaTexture = textureLoader.load("/textures/door/alpha.jpg"); // we can re-use textureLoader and get messages from loadingManager for each instance
 const heightTexture = textureLoader.load("/textures/door/height.jpg");
 const normalTexture = textureLoader.load("/textures/door/normal.jpg");
@@ -37,14 +37,33 @@ const metalnessTexture = textureLoader.load("/textures/door/metalness.jpg");
 const roughnessTexture = textureLoader.load("/textures/door/roughness.jpg");
 
 colorTexture.colorSpace = THREE.SRGBColorSpace; // textures used as map or matcap need to be encoded as sRGB
-colorTexture.repeat.x = 2;
-colorTexture.repeat.y = 3; // by itself, scales texture by 1/3 and causes the last pixel to repeat to the end of the UV mapping coordinate
-colorTexture.wrapS = THREE.RepeatWrapping; // causes whole texture to repeat rather than just last pixel
-colorTexture.wrapT = THREE.MirroredRepeatWrapping; // same but mirrored every wrap... but not working??
-colorTexture.offset.x = 0.5; // units are texture dimensions
-colorTexture.rotation = Math.PI * 0.5; // radians - default centre of rotation is at a vertex - 0,0 on the UV map (?)
-colorTexture.center.x = 0.5;
-colorTexture.center.y = 0.5;
+
+/** Transformations
+ * colorTexture.repeat.x = 2;
+ * colorTexture.repeat.y = 3; // by itself, scales texture by 1/3 and causes the last pixel to repeat to the end of the UV mapping coordinate
+ * colorTexture.wrapS = THREE.RepeatWrapping; // causes whole texture to repeat rather than just last pixel
+ * colorTexture.wrapT = THREE.MirroredRepeatWrapping; // same but mirrored every wrap
+ * colorTexture.offset.x = 0.5; // units are texture dimensions
+ * colorTexture.rotation = Math.PI * 0.5; // radians - default centre of rotation is at a vertex - 0,0 on the UV map (?)
+ * colorTexture.center.x = 0.5;
+ * colorTexture.center.y = 0.5;
+ */
+
+colorTexture.minFilter = THREE.LinearMipmapLinearFilter; // NearestFilter is good default for good performance; LinearMipmapLinearFilter seems to work slightly better for avoiding moiré patterns (?)
+colorTexture.generateMipmaps = false; // using NearestFilter for minFilter obviates the need for mip-mapping
+colorTexture.magFilter = THREE.NearestFilter; // provides sharper textures when the texture is stretched over too many pixels (use checkerboard-8x8.png in colorTexture to see)
+
+/** Notes on texture files
+ * dimensions in pixels should be a power of 2 (for mip-mapping) - i.e. 512, 1048 etc.
+ * if not, Three will resize, affecting performance
+ * consider the max size we will be seeing the texture at on-screen, and size accordingly
+ * use compression where possible - jpg is good, basis is better
+ * png supports transparency, but we can also send an alpha texture alongside a jpg
+ * using an alpha means sending more to the GPU but less to load, so it's a trade-off
+ * normals are usually stored lossless (i.e. png) because it's better to have exact surface orientations
+ * can combine maps into one by using R, G, B values separately for e.g. alpha, shadow, elevation etc.
+ * good websites for textures: poliigon.com, 3dtextures.me, arroway-textures.ch
+ */
 
 /**
  * Base
