@@ -28,7 +28,7 @@ const doorRoughnessTexture = textureLoader.load(
   "./textures/door/roughness.jpg"
 );
 const matcapTexture = textureLoader.load("./textures/matcaps/5.png");
-const gradientTexture = textureLoader.load("./textures/gradients/3.png");
+const gradientTexture = textureLoader.load("./textures/gradients/5.jpg");
 
 doorColorTexture.colorSpace = THREE.SRGBColorSpace;
 matcapTexture.colorSpace = THREE.SRGBColorSpace;
@@ -58,9 +58,15 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // const material = new THREE.MeshDepthMaterial();
 // // for complex materials, shadows etc.
 
-// MeshLambertMaterial
-const material = new THREE.MeshLambertMaterial();
-// most performant material that supports lights, but parameters are inconvenient and there may be strange effects with rounded geometries
+// // MeshLambertMaterial
+// const material = new THREE.MeshLambertMaterial();
+// // most performant material that supports lights, but parameters are inconvenient and there may be strange effects with rounded geometries
+
+// MeshPhongMaterial
+const material = new THREE.MeshPhongMaterial();
+material.shininess = 100;
+material.specular = new THREE.Color(0x1188ff);
+// less performant than Lambert but supports these extra properties - however these are not physics-based
 
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
 const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
