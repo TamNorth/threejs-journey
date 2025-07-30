@@ -27,7 +27,7 @@ const doorNormalTexture = textureLoader.load("./textures/door/normal.jpg");
 const doorRoughnessTexture = textureLoader.load(
   "./textures/door/roughness.jpg"
 );
-const matcapTexture = textureLoader.load("./textures/matcaps/1.png");
+const matcapTexture = textureLoader.load("./textures/matcaps/5.png");
 const gradientTexture = textureLoader.load("./textures/gradients/3.png");
 
 doorColorTexture.colorSpace = THREE.SRGBColorSpace;
@@ -49,9 +49,18 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // const material = new THREE.MeshNormalMaterial();
 // material.flatShading = true; // useful for debugging
 
-// MeshMatcapMaterial
-const material = new THREE.MeshMatcapMaterial();
-material.matcap = matcapTexture;
+// // MeshMatcapMaterial
+// const material = new THREE.MeshMatcapMaterial();
+// material.matcap = matcapTexture;
+// // where to get matcaps: https://github.com/nidorx/matcaps (but note licences not all verified) or make one at https://www.kchapelier.com/matcap-studio/ or in 3D software by rendering a sphere with lighting and taking a 2D image, or paint one!
+
+// // MeshDepthMaterial
+// const material = new THREE.MeshDepthMaterial();
+// // for complex materials, shadows etc.
+
+// MeshLambertMaterial
+const material = new THREE.MeshLambertMaterial();
+// most performant material that supports lights, but parameters are inconvenient and there may be strange effects with rounded geometries
 
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
 const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
@@ -64,6 +73,19 @@ sphere.position.x = -1.5;
 torus.position.x = 1.5;
 
 scene.add(sphere, plane, torus);
+
+/**
+ * Lights
+ */
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 30);
+pointLight.position.x = 2;
+pointLight.position.y = 3;
+pointLight.position.z = 4;
+scene.add(pointLight);
 
 /**
  * Sizes
