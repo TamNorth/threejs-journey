@@ -62,11 +62,18 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 // const material = new THREE.MeshLambertMaterial();
 // // most performant material that supports lights, but parameters are inconvenient and there may be strange effects with rounded geometries
 
-// MeshPhongMaterial
-const material = new THREE.MeshPhongMaterial();
-material.shininess = 100;
-material.specular = new THREE.Color(0x1188ff);
-// less performant than Lambert but supports these extra properties - however these are not physics-based
+// // MeshPhongMaterial
+// const material = new THREE.MeshPhongMaterial();
+// material.shininess = 100;
+// material.specular = new THREE.Color(0x1188ff);
+// // less performant than Lambert but supports these extra properties - however these are not physics-based
+
+// MeshToonMaterial
+const material = new THREE.MeshToonMaterial(); // by default provides a 2-part gradient - dark & light
+gradientTexture.minFilter = THREE.NearestFilter;
+gradientTexture.generateMipmaps = false;
+gradientTexture.magFilter = THREE.NearestFilter;
+material.gradientMap = gradientTexture; // NB default mip-mapping will stretch and smooth our gradientTexture so that we do not get separate defined values
 
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
 const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
