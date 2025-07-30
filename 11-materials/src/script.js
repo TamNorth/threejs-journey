@@ -36,14 +36,18 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
 /**
  * Objects
  */
-// MeshBasicMaterial
-const material = new THREE.MeshBasicMaterial();
-material.map = doorColorTexture;
-material.color = new THREE.Color(0x00ff00);
-material.transparent = true; // required if modifying alpha e.g. with .opacity or .alphaMap
-material.opacity = 0.2;
-material.alphaMap = doorAlphaTexture;
-material.side = THREE.DoubleSide; // renders texture on both sides but requires more processing
+// // MeshBasicMaterial
+// const material = new THREE.MeshBasicMaterial();
+// material.map = doorColorTexture;
+// material.color = new THREE.Color(0x00ff00);
+// material.transparent = true; // required if modifying alpha e.g. with .opacity or .alphaMap
+// material.opacity = 0.2;
+// material.alphaMap = doorAlphaTexture;
+// material.side = THREE.DoubleSide; // renders texture on both sides but requires more processing
+
+// MeshNormalMaterial
+const material = new THREE.MeshNormalMaterial();
+material.flatShading = true; // useful for debugging
 
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), material);
 const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
