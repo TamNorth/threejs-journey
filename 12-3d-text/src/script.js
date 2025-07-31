@@ -47,17 +47,19 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
     bevelSegments: 4,
   });
 
-  /** Centering the text geometry
-   *
+  /** Centering the text geometry - nuts & bolts method
+   * // before moving, the mesh & geometry both rotate about the origin which is at the bottom, back, left of the text; move the geometry and not the mesh, to move the centre of the geometry to the center of rotation of the mesh
+   * textGeometry.computeBoundingBox(); // use to find the centre of the text; NB by default, Three uses a bounding sphere
+   * textGeometry.translate(
+   *     -(textGeometry.boundingBox.max.x - bevelSize) * 0.5,
+   *     -(textGeometry.boundingBox.max.y - bevelSize) * 0.5,
+   *     -(textGeometry.boundingBox.max.z - bevelThickness) * 0.5
+   *   );
+   *   textGeometry.computeBoundingBox();
+   *   console.log(textGeometry.boundingBox);
    */
-  textGeometry.computeBoundingBox(); // use to find the centre of the text; NB by default, Three uses a bounding sphere
-  textGeometry.translate(
-    -(textGeometry.boundingBox.max.x - bevelSize) * 0.5,
-    -(textGeometry.boundingBox.max.y - bevelSize) * 0.5,
-    -(textGeometry.boundingBox.max.z - bevelThickness) * 0.5
-  ); // before moving, the mesh & geometry both rotate about the origin which is at the bottom, back, left of the text; move the geometry and not the mesh, to move the centre of the geometry to the center of rotation of the mesh
-  textGeometry.computeBoundingBox();
-  console.log(textGeometry.boundingBox);
+
+  textGeometry.center();
 
   const textMaterial = new THREE.MeshBasicMaterial({
     wireframe: true,
