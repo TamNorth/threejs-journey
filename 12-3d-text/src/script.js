@@ -26,8 +26,8 @@ scene.add(axesHelper);
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
-const textMatcapTexture = textureLoader.load("/textures/matcaps/3.png");
-textMatcapTexture.colorSpace = THREE.SRGBColorSpace;
+const matcapTexture = textureLoader.load("/textures/matcaps/3.png");
+matcapTexture.colorSpace = THREE.SRGBColorSpace;
 
 /**
  * Fonts
@@ -63,11 +63,25 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
 
   textGeometry.center();
 
-  const textMaterial = new THREE.MeshMatcapMaterial({
-    matcap: textMatcapTexture,
+  const matcapMaterial = new THREE.MeshMatcapMaterial({
+    matcap: matcapTexture,
   });
-  const text = new THREE.Mesh(textGeometry, textMaterial);
+  const text = new THREE.Mesh(textGeometry, matcapMaterial);
   scene.add(text);
+
+  const torusGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45); // NB keeping this outside of the for loop will save a lot on computation time
+
+  for (let i = 0; i < 100; i++) {
+    const torus = new THREE.Mesh(torusGeometry, matcapMaterial);
+    torus.position.x = (Math.random() - 0.5) * 10;
+    torus.position.y = (Math.random() - 0.5) * 10;
+    torus.position.z = (Math.random() - 0.5) * 10;
+    torus.rotation.x = (Math.random() - 0.5) * Math.PI;
+    torus.rotation.y = (Math.random() - 0.5) * Math.PI; // only need to do 2 axes, as this is sufficient to look in any direction (and torus is radially symmetrical)
+    const scale = Math.random();
+    torus.scale.set(scale, scale, scale);
+    scene.add(torus);
+  }
 });
 
 // /**
