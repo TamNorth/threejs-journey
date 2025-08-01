@@ -51,27 +51,24 @@ for (let i = 0; i < 100; i++) {
  */
 const fontLoader = new FontLoader();
 
-fontLoader.load(
-  "/13-go-live/public/fonts/helvetiker_regular.typeface.json",
-  (font) => {
-    // Text
-    const textGeometry = new TextGeometry("Hello Three.js", {
-      font: font,
-      size: 0.5,
-      depth: 0.2,
-      curveSegments: 12,
-      bevelEnabled: true,
-      bevelThickness: 0.03,
-      bevelSize: 0.02,
-      bevelOffset: 0,
-      bevelSegments: 5,
-    });
-    textGeometry.center();
+fontLoader.load("/public/fonts/helvetiker_regular.typeface.json", (font) => {
+  // Text
+  const textGeometry = new TextGeometry("Hello Three.js", {
+    font: font,
+    size: 0.5,
+    depth: 0.2,
+    curveSegments: 12,
+    bevelEnabled: true,
+    bevelThickness: 0.03,
+    bevelSize: 0.02,
+    bevelOffset: 0,
+    bevelSegments: 5,
+  });
+  textGeometry.center();
 
-    const text = new THREE.Mesh(textGeometry, material);
-    scene.add(text);
-  }
-);
+  const text = new THREE.Mesh(textGeometry, material);
+  scene.add(text);
+});
 
 /**
  * Sizes
