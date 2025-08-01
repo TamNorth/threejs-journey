@@ -51,7 +51,7 @@ for (let i = 0; i < 100; i++) {
  */
 const fontLoader = new FontLoader();
 
-fontLoader.load("/dist/fonts/helvetiker_regular.typeface.json", (font) => {
+fontLoader.load("./fonts/helvetiker_regular.typeface.json", (font) => {
   // Text
   const textGeometry = new TextGeometry("Hello Three.js", {
     font: font,
