@@ -35,8 +35,12 @@ jobs:
         uses: actions/setup-node@v4
       - name: install dependencies
         run: npm install
+        with:
+          path: "./13-go-live"
       - name: build app
         run: npm run build
+        with:
+          path: "./13-go-live"
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
