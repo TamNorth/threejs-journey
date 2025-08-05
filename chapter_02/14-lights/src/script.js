@@ -52,6 +52,30 @@ scene.add(spotLight);
 
 // Performance: lights can cost a lot of performance - minimal cost is ambient and hemisphere, moderate cost is directional and point, high is spot and rectArea - consider baking textures if an issue
 
+// Helpers
+const hemisphereLightHelper = new THREE.HemisphereLightHelper(
+  hemisphereLight,
+  0.2
+);
+scene.add(hemisphereLightHelper);
+
+const directionalLightHelper = new THREE.DirectionalLightHelper(
+  directionalLight,
+  0.2
+);
+scene.add(directionalLightHelper);
+
+const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.2);
+scene.add(pointLightHelper);
+
+const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight); // has to be imported (see imports at top)
+scene.add(rectAreaLightHelper);
+
+const spotLightHelper = new THREE.SpotLightHelper(spotLight, 0.2);
+scene.add(spotLightHelper);
+
+// Personal note: probably best to put these all in debug gui!
+
 /**
  * Objects
  */
