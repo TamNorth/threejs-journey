@@ -3,6 +3,13 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
 
 /**
+ * Textures
+ */
+const textureLoader = new THREE.TextureLoader();
+const bakedShadow = textureLoader.load("/textures/bakedShadow.jpg");
+bakedShadow.colorSpace = THREE.SRGBColorSpace;
+
+/**
  * Base
  */
 // Debug
@@ -56,7 +63,10 @@ gui.add(material, "roughness").min(0).max(1).step(0.001);
  */
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
 
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
+const plane = new THREE.Mesh(
+  new THREE.PlaneGeometry(5, 5),
+  new THREE.MeshBasicMaterial({ map: bakedShadow })
+);
 plane.rotation.x = -Math.PI * 0.5;
 plane.position.y = -0.5;
 
@@ -120,7 +130,7 @@ plane.receiveShadow = true;
 directionalLight.castShadow = true;
 spotLight.castShadow = true;
 pointLight.castShadow = true;
-renderer.shadowMap.enabled = true;
+// renderer.shadowMap.enabled = true;
 directionalLight.shadow.mapSize.width = 1024;
 directionalLight.shadow.mapSize.height = 1024; // must be a power of 2
 
@@ -158,7 +168,7 @@ const spotLightHelper = new THREE.CameraHelper(spotLight.shadow.camera);
 // scene.add(spotLightHelper);
 
 const pointLightHelper = new THREE.CameraHelper(pointLight.shadow.camera);
-scene.add(pointLightHelper);
+// scene.add(pointLightHelper);
 
 /**
  * Animate
