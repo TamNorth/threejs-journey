@@ -18,12 +18,12 @@ const scene = new THREE.Scene();
  * Lights
  */
 // Ambient light
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
 gui.add(ambientLight, "intensity").min(0).max(3).step(0.001);
 scene.add(ambientLight);
 
 // Directional light
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.3);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.1);
 directionalLight.position.set(2, 2, -1);
 gui.add(directionalLight, "intensity").min(0).max(3).step(0.001);
 gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001);
@@ -31,11 +31,17 @@ gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001);
 gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001);
 scene.add(directionalLight);
 
-// Spot Light
-const spotLight = new THREE.SpotLight(0xffffff, 3.6, 10, Math.PI * 0.3);
+// Spot light
+const spotLight = new THREE.SpotLight(0xffffff, 2.4, 10, Math.PI * 0.3);
 spotLight.position.set(0, 2, 2);
 scene.add(spotLight);
 scene.add(spotLight.target);
+
+// Point light
+const pointLight = new THREE.PointLight(0xffffff, 2.7);
+pointLight.position.set(-1, 1, 0);
+scene.add(pointLight);
+// Note about point lights - because they are omnidirectional, the shadow camera has to render in 6 directions to create the shadowMap - high performance cost!
 
 /**
  * Materials
@@ -113,6 +119,7 @@ sphere.castShadow = true;
 plane.receiveShadow = true;
 directionalLight.castShadow = true;
 spotLight.castShadow = true;
+pointLight.castShadow = true;
 renderer.shadowMap.enabled = true;
 directionalLight.shadow.mapSize.width = 1024;
 directionalLight.shadow.mapSize.height = 1024; // must be a power of 2
@@ -131,6 +138,9 @@ spotLight.shadow.mapSize.width = 1024;
 spotLight.shadow.mapSize.height = 1024;
 // spotLight.shadow.camera.fov = 30; // NB in later versions of three.js, this doesn't work - even though changes will be reflected by the cameraHelper, the shadow.camera.fov will be overridden by the spotLight fov
 
+pointLight.shadow.camera.near = 0.1;
+pointLight.shadow.camera.far = 5;
+
 // Notes on shadowMap algorithms: BasicShadowMap - very performant but poor quality; PCFShadowMap - less performant but smoother edges (default); PCFSoftShadowMap - less performant but even softer edges; VSMShadowMap - less performant, more constraints, can have unexpected results
 
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // NB directionalLight.shadow.radius does not work with this type, but instead we can blur using a lower resolution of shadowMap
@@ -145,7 +155,10 @@ const directionalLightCameraHelper = new THREE.CameraHelper(
 // scene.add(directionalLightCameraHelper);
 
 const spotLightHelper = new THREE.CameraHelper(spotLight.shadow.camera);
-scene.add(spotLightHelper);
+// scene.add(spotLightHelper);
+
+const pointLightHelper = new THREE.CameraHelper(pointLight.shadow.camera);
+scene.add(pointLightHelper);
 
 /**
  * Animate
