@@ -18,18 +18,24 @@ const scene = new THREE.Scene();
  * Lights
  */
 // Ambient light
-const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
 gui.add(ambientLight, "intensity").min(0).max(3).step(0.001);
 scene.add(ambientLight);
 
 // Directional light
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.3);
 directionalLight.position.set(2, 2, -1);
 gui.add(directionalLight, "intensity").min(0).max(3).step(0.001);
 gui.add(directionalLight.position, "x").min(-5).max(5).step(0.001);
 gui.add(directionalLight.position, "y").min(-5).max(5).step(0.001);
 gui.add(directionalLight.position, "z").min(-5).max(5).step(0.001);
 scene.add(directionalLight);
+
+// Spot Light
+const spotLight = new THREE.SpotLight(0xffffff, 3.6, 10, Math.PI * 0.3);
+spotLight.position.set(0, 2, 2);
+scene.add(spotLight);
+scene.add(spotLight.target);
 
 /**
  * Materials
@@ -106,6 +112,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 sphere.castShadow = true;
 plane.receiveShadow = true;
 directionalLight.castShadow = true;
+spotLight.castShadow = true;
 renderer.shadowMap.enabled = true;
 directionalLight.shadow.mapSize.width = 1024;
 directionalLight.shadow.mapSize.height = 1024; // must be a power of 2
@@ -118,6 +125,12 @@ directionalLight.shadow.camera.top = 1;
 directionalLight.shadow.camera.bottom = -1; // reducing orthographic camera size means the sphere is larger in the camera view relative to the shadowMap size, therefore the shadow is higher-res
 // directionalLight.shadow.radius = 10; // adds a blur, simulates diffraction but beware this is not physically realistic - blur is not relative to shadow-object distance - NB this doesn't work with PCFSoftShadowMap
 
+spotLight.shadow.camera.near = 1;
+spotLight.shadow.camera.far = 6;
+spotLight.shadow.mapSize.width = 1024;
+spotLight.shadow.mapSize.height = 1024;
+// spotLight.shadow.camera.fov = 30; // NB in later versions of three.js, this doesn't work - even though changes will be reflected by the cameraHelper, the shadow.camera.fov will be overridden by the spotLight fov
+
 // Notes on shadowMap algorithms: BasicShadowMap - very performant but poor quality; PCFShadowMap - less performant but smoother edges (default); PCFSoftShadowMap - less performant but even softer edges; VSMShadowMap - less performant, more constraints, can have unexpected results
 
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // NB directionalLight.shadow.radius does not work with this type, but instead we can blur using a lower resolution of shadowMap
@@ -129,7 +142,10 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap; // NB directionalLight.shadow.
 const directionalLightCameraHelper = new THREE.CameraHelper(
   directionalLight.shadow.camera
 );
-scene.add(directionalLightCameraHelper);
+// scene.add(directionalLightCameraHelper);
+
+const spotLightHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+scene.add(spotLightHelper);
 
 /**
  * Animate
