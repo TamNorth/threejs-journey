@@ -75,6 +75,29 @@ bush4.scale.set(0.15, 0.15, 0.15);
 bush4.position.set(-1, 0.05, 2.6);
 house.add(bush1, bush2, bush3, bush4);
 
+// Graves
+const graveGeometry = new THREE.BoxGeometry(0.6, 0.8, 0.2);
+const graveMaterial = new THREE.MeshStandardMaterial();
+
+const graves = new THREE.Group();
+scene.add(graves);
+
+for (let i = 0; i < 30; i++) {
+  const grave = new THREE.Mesh(graveGeometry, graveMaterial);
+  const azimuth = Math.random() * Math.PI * 2;
+  const radius = Math.random() * 4 + 3;
+  const height = Math.random() * 0.4;
+  grave.position.set(
+    Math.sin(azimuth) * radius,
+    height,
+    Math.cos(azimuth) * radius
+  );
+  const tilt = (Math.random() - 0.5) * Math.PI * 0.25;
+  const lean = (Math.random() - 0.5) * Math.PI * 0.25;
+  grave.rotation.set(tilt, lean, 0);
+  graves.add(grave);
+}
+
 // Floor
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(20, 20),
