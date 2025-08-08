@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { Sky } from "three/addons/objects/Sky.js";
 import { Timer } from "three/addons/misc/Timer.js";
 import GUI from "lil-gui";
 
@@ -16,7 +17,7 @@ const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 
 // Axes helper
-scene.add(new THREE.AxesHelper(10));
+// scene.add(new THREE.AxesHelper(10));
 
 /**
  * Textures
@@ -418,7 +419,25 @@ ghost3.shadow.camera.far = 10;
 const directionalLightCameraHelper = new THREE.CameraHelper(
   directionalLight.shadow.camera
 );
-scene.add(directionalLightCameraHelper);
+// scene.add(directionalLightCameraHelper);
+
+/**
+ * Sky
+ */
+const sky = new Sky();
+sky.scale.setScalar(100);
+scene.add(sky);
+
+sky.material.uniforms["turbidity"].value = 10;
+sky.material.uniforms["rayleigh"].value = 3;
+sky.material.uniforms["mieCoefficient"].value = 0.1;
+sky.material.uniforms["mieDirectionalG"].value = 0.95;
+sky.material.uniforms["sunPosition"].value.set(0.3, -0.038, -0.95);
+
+/**
+ * Fog
+ */
+scene.fog = new THREE.FogExp2("#02343f", 0.1);
 
 /**
  * Animate
