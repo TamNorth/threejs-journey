@@ -300,13 +300,26 @@ gui
  * Lights
  */
 // Ambient light
-const ambientLight = new THREE.AmbientLight("#ffffff", 0.5);
+const ambientLight = new THREE.AmbientLight("#86cdff", 0.275);
 scene.add(ambientLight);
 
 // Directional light
-const directionalLight = new THREE.DirectionalLight("#ffffff", 1.5);
+const directionalLight = new THREE.DirectionalLight("#86cdff", 1);
 directionalLight.position.set(3, 2, -8);
 scene.add(directionalLight);
+
+// Door light
+const doorLight = new THREE.PointLight("#ff7d46", 5);
+doorLight.position.set(0, 2.2, 2.5);
+house.add(doorLight);
+
+/**
+ * Ghosts
+ */
+const ghost1 = new THREE.PointLight("#8800ff", 6);
+const ghost2 = new THREE.PointLight("#ff0088", 6);
+const ghost3 = new THREE.PointLight("#ff0000", 6);
+scene.add(ghost1, ghost2, ghost3);
 
 /**
  * Sizes
@@ -370,6 +383,31 @@ const tick = () => {
 
   // Update controls
   controls.update();
+
+  // Update ghosts
+  const ghostAzimuth1 = elapsedTime * 0.5;
+  ghost1.position.x = Math.cos(ghostAzimuth1) * 4;
+  ghost1.position.z = Math.sin(ghostAzimuth1) * 4;
+  ghost1.position.y =
+    Math.sin(ghostAzimuth1) *
+    Math.sin(ghostAzimuth1 * 2.34) *
+    Math.sin(ghostAzimuth1 * 3.45);
+
+  const ghostAzimuth2 = -elapsedTime * 0.35;
+  ghost2.position.x = Math.cos(ghostAzimuth2) * 3;
+  ghost2.position.z = Math.sin(ghostAzimuth2) * 3;
+  ghost2.position.y =
+    Math.sin(ghostAzimuth2) *
+    Math.sin(ghostAzimuth2 * 2.34) *
+    Math.sin(ghostAzimuth2 * 3.45);
+
+  const ghostAzimuth3 = elapsedTime * 0.23;
+  ghost3.position.x = Math.cos(ghostAzimuth3) * 6;
+  ghost3.position.z = Math.sin(ghostAzimuth3) * 6;
+  ghost3.position.y =
+    Math.sin(ghostAzimuth3) *
+    Math.sin(ghostAzimuth3 * 2.34) *
+    Math.sin(ghostAzimuth3 * 3.45);
 
   // Render
   renderer.render(scene, camera);
