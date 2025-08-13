@@ -22,12 +22,26 @@ const textureLoader = new THREE.TextureLoader();
 /**
  * Particles
  */
-// Geometry
-const particleGeometry = new THREE.SphereGeometry(1, 32, 32);
+// Material
 const particleMaterial = new THREE.PointsMaterial({
-  size: 0.02,
+  color: "paleGoldenRod",
+  size: 0.1,
   sizeAttenuation: true,
 });
+
+// Geometry
+// const particleGeometry = new THREE.SphereGeometry(1, 32, 32);
+const particleCount = 1000;
+const particleGeometry = new THREE.BufferGeometry();
+const vertices = [];
+for (let i = 0; i < particleCount * 3; i++) {
+  vertices.push((Math.random() - 0.5) * 10);
+}
+const verticesTyped = new Float32Array(vertices);
+particleGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(verticesTyped, 3)
+);
 
 // Points
 const particles = new THREE.Points(particleGeometry, particleMaterial);
