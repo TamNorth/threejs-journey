@@ -18,20 +18,23 @@ const scene = new THREE.Scene();
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
+const particleTexture = textureLoader.load("./textures/particles/2.png");
 
 /**
  * Particles
  */
 // Material
 const particleMaterial = new THREE.PointsMaterial({
-  color: "paleGoldenRod",
+  color: "cyan",
+  alphaMap: particleTexture,
+  transparent: true,
   size: 0.1,
   sizeAttenuation: true,
 });
 
 // Geometry
 // const particleGeometry = new THREE.SphereGeometry(1, 32, 32);
-const particleCount = 1000;
+const particleCount = 5000;
 const particleGeometry = new THREE.BufferGeometry();
 const vertices = [];
 for (let i = 0; i < particleCount * 3; i++) {
