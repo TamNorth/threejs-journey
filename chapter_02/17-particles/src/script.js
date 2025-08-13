@@ -26,7 +26,8 @@ const particleTexture = textureLoader.load("./textures/particles/2.png");
 // Material
 const particleMaterial = new THREE.PointsMaterial({
   color: "cyan",
-  alphaMap: particleTexture,
+  alphaMap: particleTexture, // Problem with this method alone is that it depends on the draw order - e.g. if a particle in front of another is rendered first and the alpha is 0, the pixels of the particle behind will be invisible too as the alpha map will be applied to both
+  //   alphaTest: 0.001, // This is better, as the alphaTest simply tells the GPU not to render parts of the material if their alphaMap value is below a certain threshold (in conjunction with alphaMap partial transparency) - however, it has a hard cut-off, so the same problems as before will occur in some cases, just at a different threshold - so it doesn't work great for partial transparency
   transparent: true,
   size: 0.1,
   sizeAttenuation: true,
