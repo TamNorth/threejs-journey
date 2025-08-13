@@ -117,6 +117,17 @@ const tick = () => {
   // Update controls
   controls.update();
 
+  // Update particles
+  for (let i = 0; i < particleCount; i++) {
+    const i3 = i * 3;
+    const particleX = particlesGeometry.attributes.position.array[i3 + 0];
+    particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(
+      elapsedTime + particleX
+    );
+  }
+  particlesGeometry.attributes.position.needsUpdate = true;
+  // NB this solution works, but individually updating each vertex is costly to performance - for many particles we should use a custom shader (discussed in later lessons)
+
   // Render
   renderer.render(scene, camera);
 
