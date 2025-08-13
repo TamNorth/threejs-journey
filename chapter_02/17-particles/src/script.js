@@ -41,14 +41,18 @@ particleMaterial.blending = THREE.AdditiveBlending; // This will add the colour 
 const particleCount = 5000;
 const particlesGeometry = new THREE.BufferGeometry();
 const vertices = new Float32Array(particleCount * 3);
+const colours = new Float32Array(particleCount * 3);
 for (let i = 0; i < particleCount * 3; i++) {
   vertices[i] = (Math.random() - 0.5) * 10;
+  colours[i] = Math.random();
 }
 
 particlesGeometry.setAttribute(
   "position",
   new THREE.BufferAttribute(vertices, 3)
 );
+particlesGeometry.setAttribute("color", new THREE.BufferAttribute(colours, 3));
+particleMaterial.vertexColors = true; // Note vertex colours will be blended with the base colour
 
 // Points
 const particles = new THREE.Points(particlesGeometry, particleMaterial);
