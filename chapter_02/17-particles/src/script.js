@@ -34,6 +34,7 @@ const particleMaterial = new THREE.PointsMaterial({
 });
 // particleMaterial.depthTest = false; // This prevents WebGL from trying to order particles according to whether they are nearer or further from the camera, and avoids the initial issue with particles behind being affected by the alphaMap of particles in front. However it will cause bugs when other materials with different colours, etc., are introduced to the scene, as particles behind an object will be rendered as if in front of it
 particleMaterial.depthWrite = false; // Instead of telling WebGL not to look in the depth buffer to test whether what's being drawn is closer than what's already been drawn, we can just tell it not to write in it when drawing an object (i.e. it will not go back and modify objects behind?). This is generally a good solution
+particleMaterial.blending = THREE.AdditiveBlending; // This will add the colour values of overlapping particles together. This is more realistic for combining particles of light, which do not obscure one another, rather than material objects like snowflakes. It also has a performance cost.
 
 // Geometry
 // const particlesGeometry = new THREE.SphereGeometry(1, 32, 32);
