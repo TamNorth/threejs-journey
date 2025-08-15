@@ -18,17 +18,30 @@ const scene = new THREE.Scene();
  * Galaxy
  */
 const parameters = {
-  count: 1000,
-  size: 0.01,
+  countExponent: 5,
+  sizeExponent: -3,
 };
+
+let galaxyGeometry = null;
+let galaxyMaterial = null;
+let galaxy = null;
 
 const generateGalaxy = () => {
   /**
+   * Destroy old galaxy
+   */
+  if (galaxy !== null) {
+    galaxyGeometry.dispose();
+    galaxyMaterial.dispose();
+    scene.remove(galaxy);
+  }
+
+  /**
    * Material
    */
-  const galaxyMaterial = new THREE.PointsMaterial({
+  galaxyMaterial = new THREE.PointsMaterial({
     color: "white",
-    size: parameters.size,
+    size: 10 ** parameters.sizeExponent,
     sizeAttenuation: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
@@ -37,10 +50,10 @@ const generateGalaxy = () => {
   /**
    * Geometry
    */
-  const galaxyGeometry = new THREE.BufferGeometry();
-  const vertices = new Float32Array(parameters.count * 3);
+  galaxyGeometry = new THREE.BufferGeometry();
+  const vertices = new Float32Array(10 ** parameters.countExponent * 3);
 
-  for (let i = 0; i < parameters.count; i++) {
+  for (let i = 0; i < 10 ** parameters.countExponent; i++) {
     const i3 = i * 3;
     vertices[i3 + 0] = Math.random() - 0.5;
     vertices[i3 + 1] = Math.random() - 0.5;
@@ -55,11 +68,26 @@ const generateGalaxy = () => {
   /**
    * Points
    */
-  const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
+  galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial);
   scene.add(galaxy);
 };
 
 generateGalaxy();
+
+gui
+  .add(parameters, "countExponent")
+  .min(2)
+  .max(6)
+  .step(0.1)
+  .name("star count exponent")
+  .onFinishChange(generateGalaxy);
+gui
+  .add(parameters, "sizeExponent")
+  .min(-3)
+  .max(-1)
+  .step(0.1)
+  .name("star size exponent")
+  .onFinishChange(generateGalaxy);
 
 /**
  * Sizes
