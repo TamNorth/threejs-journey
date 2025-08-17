@@ -22,6 +22,10 @@ const parameters = {
   sizeExponent: -3,
   radius: 5,
   branches: 3,
+  spin: 1,
+  randomness: 0.2,
+  axialDecay: 2,
+  radialDecay: 2,
 };
 
 let galaxyGeometry = null;
@@ -58,13 +62,26 @@ const generateGalaxy = () => {
   for (let i = 0; i < 10 ** parameters.countExponent; i++) {
     const i3 = i * 3;
 
-    const radius = Math.random() * parameters.radius;
+    const radius = Math.random() ** parameters.radialDecay * parameters.radius;
     const branchAngle =
       ((i % parameters.branches) * 2 * Math.PI) / parameters.branches;
+    const spinAngle = radius * parameters.spin;
+    const randomX =
+      Math.random() ** parameters.axialDecay *
+      (Math.random() > 0.5 ? 1 : -1) *
+      parameters.randomness;
+    const randomY =
+      Math.random() ** parameters.axialDecay *
+      (Math.random() > 0.5 ? 1 : -1) *
+      parameters.randomness;
+    const randomZ =
+      Math.random() ** parameters.axialDecay *
+      (Math.random() > 0.5 ? 1 : -1) *
+      parameters.randomness;
 
-    vertices[i3 + 0] = radius * Math.cos(branchAngle);
-    vertices[i3 + 1] = radius * Math.sin(branchAngle);
-    vertices[i3 + 2] = 0;
+    vertices[i3 + 0] = radius * Math.cos(branchAngle + spinAngle) + randomX;
+    vertices[i3 + 1] = radius * Math.sin(branchAngle + spinAngle) + randomY;
+    vertices[i3 + 2] = randomZ;
   }
 
   galaxyGeometry.setAttribute(
@@ -108,6 +125,34 @@ gui
   .max(20)
   .step(1)
   .name("number of branches")
+  .onFinishChange(generateGalaxy);
+gui
+  .add(parameters, "spin")
+  .min(-5)
+  .max(5)
+  .step(0.1)
+  .name("spin")
+  .onFinishChange(generateGalaxy);
+gui
+  .add(parameters, "randomness")
+  .min(0)
+  .max(2)
+  .step(0.01)
+  .name("randomness")
+  .onFinishChange(generateGalaxy);
+gui
+  .add(parameters, "axialDecay")
+  .min(0.01)
+  .max(5)
+  .step(0.01)
+  .name("axial decay")
+  .onFinishChange(generateGalaxy);
+gui
+  .add(parameters, "radialDecay")
+  .min(0.01)
+  .max(5)
+  .step(0.01)
+  .name("radial decay")
   .onFinishChange(generateGalaxy);
 
 /**
