@@ -20,6 +20,8 @@ const scene = new THREE.Scene();
 const parameters = {
   countExponent: 5,
   sizeExponent: -3,
+  radius: 5,
+  branches: 3,
 };
 
 let galaxyGeometry = null;
@@ -55,9 +57,14 @@ const generateGalaxy = () => {
 
   for (let i = 0; i < 10 ** parameters.countExponent; i++) {
     const i3 = i * 3;
-    vertices[i3 + 0] = Math.random() - 0.5;
-    vertices[i3 + 1] = Math.random() - 0.5;
-    vertices[i3 + 2] = Math.random() - 0.5;
+
+    const radius = Math.random() * parameters.radius;
+    const branchAngle =
+      ((i % parameters.branches) * 2 * Math.PI) / parameters.branches;
+
+    vertices[i3 + 0] = radius * Math.cos(branchAngle);
+    vertices[i3 + 1] = radius * Math.sin(branchAngle);
+    vertices[i3 + 2] = 0;
   }
 
   galaxyGeometry.setAttribute(
@@ -87,6 +94,20 @@ gui
   .max(-1)
   .step(0.1)
   .name("star size exponent")
+  .onFinishChange(generateGalaxy);
+gui
+  .add(parameters, "radius")
+  .min(0.01)
+  .max(20)
+  .step(0.01)
+  .name("galactic radius")
+  .onFinishChange(generateGalaxy);
+gui
+  .add(parameters, "branches")
+  .min(2)
+  .max(20)
+  .step(1)
+  .name("number of branches")
   .onFinishChange(generateGalaxy);
 
 /**
