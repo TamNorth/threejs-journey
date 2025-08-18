@@ -10,7 +10,9 @@ const parameters = {
   materialColor: "#ffeded",
 };
 
-gui.addColor(parameters, "materialColor");
+gui
+  .addColor(parameters, "materialColor")
+  .onChange(() => material.color.set(parameters.materialColor));
 
 /**
  * Base
@@ -22,13 +24,45 @@ const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 
 /**
- * Test cube
+ * Objects
  */
-const cube = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshBasicMaterial({ color: "#ff0000" })
+// Textures
+const textureLoader = new THREE.TextureLoader();
+const gradientTexture = textureLoader.load("./textures/gradients/3.jpg");
+gradientTexture.magFilter = THREE.NearestFilter;
+
+// Materials
+const material = new THREE.MeshToonMaterial({
+  color: parameters.materialColor,
+  gradientMap: gradientTexture,
+});
+
+// Meshes
+const objectsDistance = 4;
+const mesh1 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
+scene.add(mesh1);
+
+const mesh2 = new THREE.Mesh(new THREE.ConeGeometry(1, 2, 32), material);
+scene.add(mesh2);
+
+const mesh3 = new THREE.Mesh(
+  new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
+  material
 );
-scene.add(cube);
+
+mesh2.position.y = objectsDistance * -1;
+mesh3.position.y = objectsDistance * -2;
+
+scene.add(mesh3);
+
+const sectionMeshes = [mesh1, mesh2, mesh3];
+
+/**
+ * Lights
+ */
+const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
+directionalLight.position.set(1, 1, 0);
+scene.add(directionalLight);
 
 /**
  * Sizes
@@ -85,6 +119,12 @@ const tick = () => {
 
   // Render
   renderer.render(scene, camera);
+
+  // Animate meshes
+  for (const mesh of sectionMeshes) {
+    mesh.rotation.x = elapsedTime * 0.1;
+    mesh.rotation.y = elapsedTime * 0.12;
+  }
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
