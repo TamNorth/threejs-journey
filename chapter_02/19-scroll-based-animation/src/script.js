@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import GUI from "lil-gui";
+import gsap from "gsap";
 
 /**
  * Debug
@@ -7,7 +8,7 @@ import GUI from "lil-gui";
 const gui = new GUI();
 
 const parameters = {
-  materialColor: "#ffeded",
+  materialColor: "#00e68a",
 };
 
 gui.addColor(parameters, "materialColor").onChange(() => {
@@ -152,8 +153,22 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  * Scroll
  */
 let scrollY = window.scrollY;
+let currentSection = 0;
+
 window.addEventListener("scroll", () => {
   scrollY = window.scrollY;
+  const newSection = Math.round(scrollY / sizes.height);
+
+  if (newSection !== currentSection) {
+    currentSection = newSection;
+    gsap.to(sectionMeshes[currentSection].rotation, {
+      direction: 1.5,
+      ease: "power2.inOut",
+      x: "+=6",
+      y: "+=3",
+      z: "+=1.5",
+    });
+  }
 });
 
 /**
@@ -195,8 +210,8 @@ const tick = () => {
 
   // Animate meshes
   for (const mesh of sectionMeshes) {
-    mesh.rotation.x = elapsedTime * 0.1;
-    mesh.rotation.y = elapsedTime * 0.12;
+    mesh.rotation.x += deltaTime * 0.1; // using deltaTime means we do not reset the rotation to a fixed value every frame and thus will not interfere with gsap animation on event listener
+    mesh.rotation.y += deltaTime * 0.12;
   }
 
   // Call tick again on the next frame
