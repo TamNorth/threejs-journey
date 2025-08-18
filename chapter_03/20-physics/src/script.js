@@ -9,7 +9,14 @@ import CANNON, { Vec3 } from "cannon";
 const gui = new GUI();
 const debugObject = {
   createSphere: () => {
-    createSphere((Math.random() + 1) * 0.25, {
+    createSphere(Math.random() * 0.5, {
+      x: (Math.random() - 0.5) * 3,
+      y: 3,
+      z: (Math.random() - 0.5) * 3,
+    });
+  },
+  createBox: () => {
+    createBox([Math.random() * 0.5, Math.random() * 0.5, Math.random() * 0.5], {
       x: (Math.random() - 0.5) * 3,
       y: 3,
       z: (Math.random() - 0.5) * 3,
@@ -17,6 +24,7 @@ const debugObject = {
   },
 };
 gui.add(debugObject, "createSphere");
+gui.add(debugObject, "createBox");
 
 /**
  * Base
@@ -236,20 +244,16 @@ const createSphere = (radius, position) => {
 };
 
 const createBox = (dimensions, position) => {
-  const boxDimensions = new CANNON.Vec3(
-    dimensions[0] * 0.5,
-    dimensions[1] * 0.5,
-    dimensions[2] * 0.5
-  );
+  const boxDimensions = new CANNON.Vec3(...dimensions);
   createObject(
     new THREE.Mesh(boxGeometry, objectMaterial),
     new CANNON.Box(boxDimensions),
-    dimensions,
+    [dimensions[0] * 2, dimensions[1] * 2, dimensions[2] * 2],
     position
   );
 };
 
-createBox([1, 1, 1], { x: 0, y: 0.5, z: 0 });
+createBox([0.5, 0.5, 0.5], { x: 0, y: 0.5, z: 0 });
 createSphere(0.5, { x: 0, y: 3, z: 0 });
 
 /**
