@@ -79,19 +79,8 @@ const defaultContactMaterial = new CANNON.ContactMaterial(
 );
 world.addContactMaterial(defaultContactMaterial);
 world.defaultContactMaterial = defaultContactMaterial;
-
-// // Sphere
-// const sphereShape = new CANNON.Sphere(0.5);
-// const sphereBody = new CANNON.Body({
-//   mass: 1,
-//   position: new CANNON.Vec3(0, 3, 0),
-//   shape: sphereShape,
-// });
-// sphereBody.applyLocalForce(
-//   new CANNON.Vec3(150, 0, 0),
-//   new CANNON.Vec3(0, 0, 0)
-// );
-// world.addBody(sphereBody); // .add() also works but not in cannon-es
+world.broadphase = new CANNON.SAPBroadphase(world); // default is naiveBroadphase, which tests every object against every other for collisions; gridBroadphase divides world into grids and only tests objects against each other if they are in the same or neighbouring grids, but can have bugs for fast moving objects, where the object passes through multiple grid cells per frame and therefore is not tested for intervening cells where it may have encountered an object between frames
+world.allowSleep = true; // allows objects with very low speeds to become dormant until a sufficient force is applied to them - parameters can be changed with sleepSpeedLimit and sleepTimeLimit
 
 // Floor
 const floorShape = new CANNON.Plane();
@@ -100,22 +89,6 @@ floorBody.mass = 0; // setting mass to 0 will tell Cannon.js that the body is st
 floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5); // unfortunately in Cannon.js we can only use quaternion
 floorBody.addShape(floorShape); // we can create complex bodies by adding multiple shapes
 world.addBody(floorBody);
-
-// /**
-//  * Test sphere
-//  */
-// const sphere = new THREE.Mesh(
-//   new THREE.SphereGeometry(0.5, 32, 32),
-//   new THREE.MeshStandardMaterial({
-//     metalness: 0.3,
-//     roughness: 0.4,
-//     envMap: environmentMapTexture,
-//     envMapIntensity: 0.5,
-//   })
-// );
-// sphere.castShadow = true;
-// sphere.position.y = 0.5;
-// scene.add(sphere);
 
 /**
  * Floor
@@ -274,6 +247,7 @@ const tick = () => {
 
   for (const object of objectsToUpdate) {
     object.mesh.position.copy(object.body.position);
+    object.mesh.quaternion.copy(object.body.quaternion);
   }
 
   //   sphere.position.copy(sphereBody.position);
