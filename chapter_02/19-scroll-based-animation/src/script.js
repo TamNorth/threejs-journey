@@ -151,10 +151,12 @@ const tick = () => {
   // Animate camera
   camera.position.y = -scrollY * (objectsDistance / sizes.height);
 
+  console.log(cursor);
+
   const parallaxX = cursor.x;
   const parallaxY = cursor.y;
-  cameraGroup.position.x = parallaxX;
-  cameraGroup.position.y = parallaxY;
+  cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 0.02;
+  cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 0.02;
 
   // Animate meshes
   for (const mesh of sectionMeshes) {
