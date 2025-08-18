@@ -1,12 +1,22 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
-import CANNON from "cannon";
+import CANNON, { Vec3 } from "cannon";
 
 /**
  * Debug
  */
 const gui = new GUI();
+const debugObject = {
+  createSphere: () => {
+    createSphere((Math.random() + 1) * 0.25, {
+      x: (Math.random() - 0.5) * 3,
+      y: 3,
+      z: (Math.random() - 0.5) * 3,
+    });
+  },
+};
+gui.add(debugObject, "createSphere");
 
 /**
  * Base
@@ -187,36 +197,59 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  * Utils
  */
 const objectsToUpdate = [];
+const sphereGeometry = new THREE.SphereGeometry(1, 20, 20);
+const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+const objectMaterial = new THREE.MeshStandardMaterial({
+  metalness: 0.3,
+  roughness: 0.4,
+  envMap: environmentMapTexture,
+});
 
-const createSphere = (radius, position) => {
+const createObject = (threeMesh, cannonShape, sizes, position) => {
   // Three.js mesh
-  const mesh = new THREE.Mesh(
-    new THREE.SphereGeometry(radius, 20, 20),
-    new THREE.MeshStandardMaterial({
-      metalness: 0.3,
-      roughness: 0.4,
-      envMap: environmentMapTexture,
-    })
-  );
-  mesh.castShadow = true;
-  mesh.position.copy(position);
-  scene.add(mesh);
+  threeMesh.scale.set(sizes[0], sizes[1], sizes[2]);
+  threeMesh.castShadow = true;
+  threeMesh.position.copy(position);
+  scene.add(threeMesh);
 
   // Cannon.js body
-  const shape = new CANNON.Sphere(radius);
   const body = new CANNON.Body({
     mass: 1,
     position: new CANNON.Vec3(0, 3, 0),
-    shape,
+    shape: cannonShape,
     material: defaultMaterial,
   });
   body.position.copy(position);
   world.add(body);
 
   // Save in array
-  objectsToUpdate.push({ mesh, body });
+  objectsToUpdate.push({ mesh: threeMesh, body });
 };
 
+const createSphere = (radius, position) => {
+  createObject(
+    new THREE.Mesh(sphereGeometry, objectMaterial),
+    new CANNON.Sphere(radius),
+    [radius, radius, radius],
+    position
+  );
+};
+
+const createBox = (dimensions, position) => {
+  const boxDimensions = new CANNON.Vec3(
+    dimensions[0] * 0.5,
+    dimensions[1] * 0.5,
+    dimensions[2] * 0.5
+  );
+  createObject(
+    new THREE.Mesh(boxGeometry, objectMaterial),
+    new CANNON.Box(boxDimensions),
+    dimensions,
+    position
+  );
+};
+
+createBox([1, 1, 1], { x: 0, y: 0.5, z: 0 });
 createSphere(0.5, { x: 0, y: 3, z: 0 });
 
 /**
