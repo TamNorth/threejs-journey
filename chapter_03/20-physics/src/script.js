@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
-import CANNON, { Vec3 } from "cannon";
+import * as CANNON from "cannon-es";
 
 /**
  * Debug
@@ -227,7 +227,7 @@ const createObject = (threeMesh, cannonShape, sizes, position) => {
   });
   body.position.copy(position);
   body.addEventListener("collide", playHitSound);
-  world.add(body);
+  world.addBody(body);
 
   // Save in array
   objectsToUpdate.push({ mesh: threeMesh, body });
