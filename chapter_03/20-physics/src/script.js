@@ -36,6 +36,22 @@ const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 
 /**
+ * Sounds
+ */
+const hitSound = new Audio("./sounds/hit.mp3");
+
+const playHitSound = (collision) => {
+  const impactStrength = collision.contact.getImpactVelocityAlongNormal();
+
+  if (impactStrength > 0.5) {
+    hitSound.volume = Math.min(1, impactStrength / 5); // should be between 0 and 1
+    hitSound.currentTime = 0; // resets sound in case it is already playing
+    hitSound.play();
+  }
+};
+// Extra tweaks: (a) play slightly different sounds at random, (b) add a very short timeframe in which the same sound cannot play again if already started playing, to account for collisions happenning near-simultaneously
+
+/**
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
@@ -201,6 +217,7 @@ const createObject = (threeMesh, cannonShape, sizes, position) => {
     material: defaultMaterial,
   });
   body.position.copy(position);
+  body.addEventListener("collide", playHitSound);
   world.add(body);
 
   // Save in array
