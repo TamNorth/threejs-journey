@@ -20,7 +20,9 @@ const scene = new THREE.Scene();
  * Models
  */
 const dracoLoader = new DRACOLoader(); // decoder is available in Web Assembly and can be run in a worker, which is useful as decompression can be a big job
+dracoLoader.setDecoderPath("/draco/");
 const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
 // gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
 //   //   const children = [...gltf.scene.children]; // Rather than looping through the array of children to port them into our scene, which can / will result in errors because the original array is modified and therefore our for...of loop loses track of its position and skips some elements, we start with a copy of the array
 //   //   for (const child of children) {
@@ -29,7 +31,9 @@ const gltfLoader = new GLTFLoader();
 //   scene.add(gltf.scene); // if we just want everything from the scene, we can do this
 // }); // This loader will work for the gltf, gltf-Binary and the gltf-Embedded, but not gltf-Draco
 
-gltfLoader.load("models/Duck/glTF-Draco/Duck.gltf", (gltf) => {});
+gltfLoader.load("./models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
+  scene.add(gltf.scene.children[0]);
+});
 
 /**
  * Floor
