@@ -20,7 +20,7 @@ const scene = new THREE.Scene();
  * Models
  */
 const dracoLoader = new DRACOLoader(); // decoder is available in Web Assembly and can be run in a worker, which is useful as decompression can be a big job
-dracoLoader.setDecoderPath("/draco/");
+dracoLoader.setDecoderPath("/draco/"); // note that these files will only be loaded if a DRACO-compressed model is used (which is great!)
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 // gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
@@ -31,8 +31,20 @@ gltfLoader.setDRACOLoader(dracoLoader);
 //   scene.add(gltf.scene); // if we just want everything from the scene, we can do this
 // }); // This loader will work for the gltf, gltf-Binary and the gltf-Embedded, but not gltf-Draco
 
-gltfLoader.load("./models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
-  scene.add(gltf.scene.children[0]);
+// gltfLoader.load("./models/Duck/glTF-Draco/Duck.gltf", (gltf) => {
+//   scene.add(gltf.scene.children[0]);
+// }); // note using DRACO-compressed-files is not always beneficial - objects are smaller but we also need to load the DRACOLoader Class and its decoder - so only beneficial for larger geometries - also bear in mind there will be a freeze when the page loads as the worker runs decompressions, which will be larger for larger files - experiment with both!
+
+let mixer = null;
+
+gltfLoader.load("./models/Fox/glTF/Fox.gltf", (gltf) => {
+  mixer = new THREE.AnimationMixer(gltf.scene);
+  const action = mixer.clipAction(gltf.animations[0]); // animations is an array - can also load walking & running anim
+
+  action.play();
+
+  gltf.scene.scale.setScalar(0.025);
+  scene.add(gltf.scene);
 });
 
 /**
@@ -128,6 +140,12 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
+
+  //  Update mixer
+  if (mixer !== null) {
+    // wait for mixer to load within gltfLoader
+    mixer.update(deltaTime);
+  }
 
   // Update controls
   controls.update();
