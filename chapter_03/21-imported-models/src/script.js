@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import GUI from "lil-gui";
 
 /**
@@ -18,14 +19,17 @@ const scene = new THREE.Scene();
 /**
  * Models
  */
+const dracoLoader = new DRACOLoader(); // decoder is available in Web Assembly and can be run in a worker, which is useful as decompression can be a big job
 const gltfLoader = new GLTFLoader();
-gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
-  //   const children = [...gltf.scene.children]; // Rather than looping through the array of children to port them into our scene, which can / will result in errors because the original array is modified and therefore our for...of loop loses track of its position and skips some elements, we start with a copy of the array
-  //   for (const child of children) {
-  //     scene.add(child);
-  //   }
-  scene.add(gltf.scene); // if we just want everything from the scene, we can do this
-}); // This loader will work for the gltf, gltf-Binary and the gltf-Embedded, but not gltf-Draco
+// gltfLoader.load("/models/FlightHelmet/glTF/FlightHelmet.gltf", (gltf) => {
+//   //   const children = [...gltf.scene.children]; // Rather than looping through the array of children to port them into our scene, which can / will result in errors because the original array is modified and therefore our for...of loop loses track of its position and skips some elements, we start with a copy of the array
+//   //   for (const child of children) {
+//   //     scene.add(child);
+//   //   }
+//   scene.add(gltf.scene); // if we just want everything from the scene, we can do this
+// }); // This loader will work for the gltf, gltf-Binary and the gltf-Embedded, but not gltf-Draco
+
+gltfLoader.load("models/Duck/glTF-Draco/Duck.gltf", (gltf) => {});
 
 /**
  * Floor
