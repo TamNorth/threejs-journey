@@ -86,6 +86,18 @@ window.addEventListener("mousemove", (event) => {
   //   console.log(mouse.x.toFixed(2) + " " + mouse.y.toFixed(2));
 }); // note that we need to do our raycasting in the tick rather than here, because in some browsers the mousemove event can fire more often than the framerate
 
+window.addEventListener("click", () => {
+  if (currentIntersection) {
+    if (currentIntersection.object === object1) {
+      console.log("sphere1");
+    } else if (currentIntersection.object === object2) {
+      console.log("sphere2");
+    } else if (currentIntersection.object === object3) {
+      console.log("sphere3");
+    }
+  }
+});
+
 /**
  * Camera
  */
@@ -116,6 +128,8 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  * Animate
  */
 const clock = new THREE.Clock();
+
+let currentIntersection = null;
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
@@ -148,6 +162,18 @@ const tick = () => {
   }
   for (const intersection of intersections) {
     intersection.object.material.color.set(0x0000ff);
+  }
+
+  if (intersections.length) {
+    if (currentIntersection === null) {
+      console.log("mouse enter");
+    }
+    currentIntersection = intersections[0];
+  } else {
+    if (currentIntersection !== null) {
+      console.log("mouse leave");
+    }
+    currentIntersection = null;
   }
 
   // Update controls
