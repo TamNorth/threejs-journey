@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { modelDirection } from "three/src/nodes/TSL.js";
 
 /**
  * Base
@@ -39,6 +41,27 @@ scene.add(object1, object2, object3);
 object1.updateMatrixWorld();
 object2.updateMatrixWorld();
 object3.updateMatrixWorld(); // three updates objects coordinates (called matrices) right before rendering them, so we have to manually update before raycasting if we want accurate results
+
+/**
+ * Models
+ */
+const gltfLoader = new GLTFLoader();
+
+let duck = null;
+gltfLoader.load("models/Duck/glTF/Duck.gltf", (gltf) => {
+  gltf.scene.position.y = -1.2;
+  duck = gltf.scene;
+  scene.add(gltf.scene);
+});
+
+/**
+ * Lights
+ */
+const directionalLight = new THREE.DirectionalLight();
+scene.add(directionalLight);
+
+const ambientLight = new THREE.AmbientLight();
+scene.add(ambientLight);
 
 /**
  * Raycaster
@@ -176,6 +199,15 @@ const tick = () => {
     currentIntersection = null;
   }
 
+  // Update duck
+  if (duck) {
+    const duckIntersection = raycaster.intersectObject(duck); // although duck is a group and not a mesh, .intersectObject will recursively check children for meshes by default <3 this can be deactivated with a boolean second argument
+    if (duckIntersection.length) {
+      duck.scale.setScalar(1.5);
+    } else {
+      duck.scale.setScalar(1);
+    }
+  }
   // Update controls
   controls.update();
 
