@@ -76,6 +76,17 @@ window.addEventListener("resize", () => {
 });
 
 /**
+ * Mouse
+ */
+const mouse = new THREE.Vector2();
+
+window.addEventListener("mousemove", (event) => {
+  mouse.x = (event.clientX / sizes.width) * 2 - 1;
+  mouse.y = -((event.clientY / sizes.height) * 2 - 1);
+  //   console.log(mouse.x.toFixed(2) + " " + mouse.y.toFixed(2));
+}); // note that we need to do our raycasting in the tick rather than here, because in some browsers the mousemove event can fire more often than the framerate
+
+/**
  * Camera
  */
 // Base camera
@@ -114,19 +125,29 @@ const tick = () => {
   object2.position.y = Math.sin(elapsedTime * 0.5);
   object3.position.y = Math.sin(elapsedTime * 1.5);
 
-  // Cast a ray
-  const rayOrigin = new THREE.Vector3(-3, 0, 0);
-  const rayDirection = new THREE.Vector3(1, 0, 0);
-  rayDirection.normalize();
-  raycaster.set(rayOrigin, rayDirection);
+  //   // Cast a ray
+  //   const rayOrigin = new THREE.Vector3(-3, 0, 0);
+  //   const rayDirection = new THREE.Vector3(1, 0, 0);
+  //   rayDirection.normalize();
+  //   raycaster.set(rayOrigin, rayDirection);
+  //   const objectsToIntersect = [object1, object2, object3];
+  //   const intersections = raycaster.intersectObjects(objectsToIntersect);
+
+  //   for (const object of objectsToIntersect) {
+  //     object.material.color.set(0xff0000);
+  //   }
+  //   for (const intersection of intersections) {
+  //     intersection.object.material.color.set(0x00ff00);
+  //   } // alternatively, just do intersections[0] to just paint the first sphere in the ray path blue
+
+  raycaster.setFromCamera(mouse, camera); // amazing functionality!
   const objectsToIntersect = [object1, object2, object3];
   const intersections = raycaster.intersectObjects(objectsToIntersect);
-
   for (const object of objectsToIntersect) {
     object.material.color.set(0xff0000);
   }
-  for (const intersect of intersections) {
-    intersect.object.material.color.set(0x00ff00);
+  for (const intersection of intersections) {
+    intersection.object.material.color.set(0x0000ff);
   }
 
   // Update controls
