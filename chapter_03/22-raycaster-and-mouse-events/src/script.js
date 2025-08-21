@@ -45,13 +45,13 @@ object3.updateMatrixWorld(); // three updates objects coordinates (called matric
  */
 const raycaster = new THREE.Raycaster();
 
-const rayOrigin = new THREE.Vector3(-3, 0, 0);
-const rayDirection = new THREE.Vector3(10, 0, 0);
-rayDirection.normalize(); // ray direction vector must have length 1
+// const rayOrigin = new THREE.Vector3(-3, 0, 0);
+// const rayDirection = new THREE.Vector3(10, 0, 0);
+// rayDirection.normalize(); // ray direction vector must have length 1
 
-raycaster.set(rayOrigin, rayDirection);
-const intersect = raycaster.intersectObject(object2); // returns an array of intersections - not per object, but per intersection with an object, so possibly multiple even just for one object
-const intersects = raycaster.intersectObjects([object1, object2, object3]); // each array element contains properties of distance (from origin to intersection), face & face index (of the object where it was intersected), object (so we can determine which object was intersected), point of the intersection (as a vector3), uv with 2D uv coordinates of intersection (we might use this e.g. to place a texture where the intersection occurred)
+// raycaster.set(rayOrigin, rayDirection);
+// const intersect = raycaster.intersectObject(object2); // returns an array of intersections - not per object, but per intersection with an object, so possibly multiple even just for one object
+// const intersects = raycaster.intersectObjects([object1, object2, object3]); // each array element contains properties of distance (from origin to intersection), face & face index (of the object where it was intersected), object (so we can determine which object was intersected), point of the intersection (as a vector3), uv with 2D uv coordinates of intersection (we might use this e.g. to place a texture where the intersection occurred)
 
 /**
  * Sizes
@@ -108,6 +108,26 @@ const clock = new THREE.Clock();
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
+
+  // Animate objects
+  object1.position.y = Math.sin(elapsedTime);
+  object2.position.y = Math.sin(elapsedTime * 0.5);
+  object3.position.y = Math.sin(elapsedTime * 1.5);
+
+  // Cast a ray
+  const rayOrigin = new THREE.Vector3(-3, 0, 0);
+  const rayDirection = new THREE.Vector3(1, 0, 0);
+  rayDirection.normalize();
+  raycaster.set(rayOrigin, rayDirection);
+  const objectsToIntersect = [object1, object2, object3];
+  const intersections = raycaster.intersectObjects(objectsToIntersect);
+
+  for (const object of objectsToIntersect) {
+    object.material.color.set(0xff0000);
+  }
+  for (const intersect of intersections) {
+    intersect.object.material.color.set(0x00ff00);
+  }
 
   // Update controls
   controls.update();
