@@ -24,6 +24,9 @@ const scene = new THREE.Scene();
 /**
  * Environment Map
  */
+scene.environmentIntensity = 1; // use this to adjust brightness levels resulting from environment map
+gui.add(scene, "environmentIntensity").min(0).max(10).step(0.1);
+
 // LDR cube texture
 const environmentMap = cubeTextureLoader.load([
   "./environmentMaps/0/px.png",
