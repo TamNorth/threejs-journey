@@ -34,6 +34,7 @@ const environmentMap = cubeTextureLoader.load([
   "./environmentMaps/0/nz.png",
 ]);
 
+scene.environment = environmentMap;
 scene.background = environmentMap;
 
 /**
@@ -47,7 +48,7 @@ const torusKnot = new THREE.Mesh(
     color: 0xaaaaaa,
   })
 );
-torusKnot.material.envMap = environmentMap;
+// torusKnot.material.envMap = environmentMap;
 torusKnot.position.y = 4;
 torusKnot.position.x = -4;
 scene.add(torusKnot);
