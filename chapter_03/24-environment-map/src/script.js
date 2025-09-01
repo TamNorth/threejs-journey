@@ -24,8 +24,19 @@ const scene = new THREE.Scene();
 /**
  * Environment Map
  */
-scene.environmentIntensity = 1; // use this to adjust brightness levels resulting from environment map
-gui.add(scene, "environmentIntensity").min(0).max(10).step(0.1);
+gui.add(scene, "environmentIntensity").min(0).max(10).step(0.1); // affects lighting but not brightness of background
+gui.add(scene, "backgroundIntensity").min(0).max(10).step(0.1); // affects brightness of background but not lighting - in general good to scale with environmentIntensity
+gui.add(scene, "backgroundBlurriness").min(0).max(1).step(0.01);
+gui
+  .add(scene.backgroundRotation, "y")
+  .min(0)
+  .max(2 * Math.PI)
+  .step(0.1);
+gui
+  .add(scene.environmentRotation, "y")
+  .min(0)
+  .max(2 * Math.PI)
+  .step(0.1);
 
 // LDR cube texture
 const environmentMap = cubeTextureLoader.load([
